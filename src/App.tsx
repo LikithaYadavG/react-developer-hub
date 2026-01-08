@@ -1,8 +1,14 @@
+import { useState } from "react";
+import { Layout } from "./app/layout/Layout";
 
 const App = () => {
-  return (
-    <div >App</div>
-  )
-}
+	const [currentView, setCurrentView] = useState<"home" | "favorites">("home");
 
-export default App
+	return (
+		<Layout currentView={currentView} onNavigate={setCurrentView}>
+			{null}
+		</Layout>
+	);
+};
+
+export default App;
