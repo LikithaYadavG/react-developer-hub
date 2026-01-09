@@ -17,15 +17,12 @@ const defaultProps: Required<RenderOptions> = {
 	children: <div>Page Content</div>,
 };
 
-const renderLayout = (props?: RenderOptions) => {
-	const mergedProps = { ...defaultProps, ...props };
+const renderLayout = (additionalProps?: RenderOptions) => {
+	const props = { ...defaultProps, ...additionalProps };
 
 	return render(
-		<Layout
-			currentView={mergedProps.currentView}
-			onNavigate={mergedProps.onNavigate}
-		>
-			{mergedProps.children}
+		<Layout currentView={props.currentView} onNavigate={props.onNavigate}>
+			{props.children}
 		</Layout>,
 	);
 };

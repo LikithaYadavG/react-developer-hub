@@ -15,13 +15,13 @@ const defaultProps: Required<RenderOptions> = {
 	onNavigate: vi.fn(),
 };
 
-const renderNavigationBar = (props?: RenderOptions) => {
-	const mergedProps = { ...defaultProps, ...props };
+const renderNavigationBar = (additionalProps?: RenderOptions) => {
+	const props = { ...defaultProps, ...additionalProps };
 
 	return render(
 		<NavigationBar
-			currentView={mergedProps.currentView}
-			onNavigate={mergedProps.onNavigate}
+			currentView={props.currentView}
+			onNavigate={props.onNavigate}
 		/>,
 	);
 };
