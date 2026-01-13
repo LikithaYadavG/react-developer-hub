@@ -6,14 +6,14 @@ import { Checkbox } from "../checkbox/Checkbox";
 
 interface FilterDropdownProps {
 	label: string;
-	options: string[];
+	availableOptions: string[];
 	selectedOptions: string[];
 	onSelectionChange: (selected: string[]) => void;
 }
 
 export const FilterDropdown = ({
 	label,
-	options,
+	availableOptions,
 	selectedOptions,
 	onSelectionChange,
 }: FilterDropdownProps) => {
@@ -49,7 +49,7 @@ export const FilterDropdown = ({
 
 	const handleToggleOption = (option: string) => {
 		const newSelection = selectedOptions.includes(option)
-			? selectedOptions.filter((item) => item !== option)
+			? selectedOptions.filter((selectedOption) => selectedOption !== option)
 			: [...selectedOptions, option];
 
 		onSelectionChange(newSelection);
@@ -83,15 +83,15 @@ export const FilterDropdown = ({
 				>
 					<legend className="sr-only">{label} filter options</legend>
 					<ul className="list-none m-0">
-						{options.map((option) => (
+						{availableOptions.map((availableOption) => (
 							<li
-								key={option}
+								key={availableOption}
 								className="px-3 py-2 mx-2 mb-1 hover:bg-blue-50 hover:border hover:border-blue-500 hover:text-blue-700 rounded transition-colors"
 							>
 								<Checkbox
-									label={option}
-									checked={selectedOptions.includes(option)}
-									onChange={() => handleToggleOption(option)}
+									label={availableOption}
+									checked={selectedOptions.includes(availableOption)}
+									onChange={() => handleToggleOption(availableOption)}
 								/>
 							</li>
 						))}

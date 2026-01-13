@@ -15,7 +15,7 @@ export const Badge = ({
 		success: "bg-green-100 text-green-800",
 		warning: "bg-amber-100 text-amber-800",
 		error: "bg-red-100 text-red-800",
-	};
+	} as const;
 
 	return (
 		<span

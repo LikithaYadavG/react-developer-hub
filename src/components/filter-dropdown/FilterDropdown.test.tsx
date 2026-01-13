@@ -5,14 +5,14 @@ import { FilterDropdown } from "./FilterDropdown";
 
 interface RenderOptions {
 	label?: string;
-	options?: string[];
+	availableOptions?: string[];
 	selectedOptions?: string[];
 	onSelectionChange?: (selected: string[]) => void;
 }
 
 const defaultProps: Required<RenderOptions> = {
 	label: "Filter",
-	options: ["One", "Two", "Three"],
+	availableOptions: ["One", "Two", "Three"],
 	selectedOptions: [],
 	onSelectionChange: vi.fn(),
 };
@@ -23,7 +23,7 @@ const renderFilterDropdown = (additionalProps?: RenderOptions) => {
 	return render(
 		<FilterDropdown
 			label={props.label}
-			options={props.options}
+			availableOptions={props.availableOptions}
 			selectedOptions={props.selectedOptions}
 			onSelectionChange={props.onSelectionChange}
 		/>,

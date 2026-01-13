@@ -1,89 +1,75 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, it, vi } from "vitest";
+import { describe, it, vi, beforeEach } from "vitest";
 import { SearchBar } from "./SearchBar";
-
-interface RenderOptions {
-	value?: string;
-	placeholder?: string;
-	label?: string;
-	showClearButton?: boolean;
-	onChange?: (value: string) => void;
-}
-
-const defaultProps: Required<Omit<RenderOptions, "value">> = {
-	placeholder: "Search by title, description, or tags...",
-	label: "Search",
-	showClearButton: true,
-	onChange: vi.fn(),
-};
-
-const renderSearchBar = (additionalProps?: RenderOptions) => {
-	const props = { ...defaultProps, ...additionalProps };
-
-	return render(
-		<SearchBar
-			value={props.value}
-			placeholder={props.placeholder}
-			label={props.label}
-			showClearButton={props.showClearButton}
-			onChange={props.onChange}
-		/>,
-	);
-};
 
 describe("SearchBar", () => {
 	const user = userEvent.setup();
 
-	it("should render a search textbox", () => {
-		renderSearchBar();
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it("renders a search input", () => {
+		render(<SearchBar />);
 
 		const input = screen.getByRole("textbox");
-
 		expect(input).toBeInTheDocument();
 	});
 
-	it("should update value when user types in uncontrolled mode", async () => {
-		renderSearchBar();
+	it("shows the clear button when the user types", async () => {
+		render(<SearchBar />);
 
 		const input = screen.getByRole("textbox");
-		await user.type(input, "a");
 
-		expect(defaultProps.onChange).toHaveBeenCalled();
+		expect(
+			screen.queryByRole("button", { name: /clear/i }),
+		).not.toBeInTheDocument();
+
+		await user.type(input, "react");
+
+		expect(screen.getByRole("button", { name: /clear/i })).toBeInTheDocument();
 	});
 
-	it("should render clear button when value is present", () => {
-		renderSearchBar({ value: "test" });
+	it("clears the search input when the user clicks the clear button", async () => {
+		render(<SearchBar />);
 
-		const clearButton = screen.getByRole("button", { name: /clear/i });
+		const input = screen.getByRole("textbox");
 
-		expect(clearButton).toBeInTheDocument();
-	});
-
-	it("should clear value when clear button is clicked", async () => {
-		const onChange = vi.fn();
-
-		renderSearchBar({ value: "test", onChange });
+		await user.type(input, "react");
 
 		const clearButton = screen.getByRole("button", { name: /clear/i });
 		await user.click(clearButton);
 
-		expect(onChange).toHaveBeenCalledWith("");
+		expect(input).toHaveValue("");
 	});
 
-	it("should not render clear button when showClearButton is false", () => {
-		renderSearchBar({ value: "test", showClearButton: false });
-
-		const clearButton = screen.queryByRole("button", { name: /clear/i });
-
-		expect(clearButton).not.toBeInTheDocument();
-	});
-
-	it("should respect controlled value prop", () => {
-		renderSearchBar({ value: "controlled value" });
+	it("does not show the clear button when clearing is disabled", async () => {
+		render(<SearchBar showClearButton={false} />);
 
 		const input = screen.getByRole("textbox");
 
-		expect(input).toHaveValue("controlled value");
+		await user.type(input, "react");
+
+		expect(
+			screen.queryByRole("button", { name: /clear/i }),
+		).not.toBeInTheDocument();
+	});
+	it("updates the search input as the user types", async () => {
+		render(<SearchBar />);
+
+		const input = screen.getByRole("textbox");
+
+		await user.type(input, "a");
+
+		expect(input).toHaveValue("a");
+	});
+
+	it("renders the input with an existing search text", () => {
+		render(<SearchBar searchQuery="pre-filled text" />);
+
+		const input = screen.getByRole("textbox");
+
+		expect(input).toHaveValue("pre-filled text");
 	});
 });

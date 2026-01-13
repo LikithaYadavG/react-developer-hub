@@ -1,11 +1,17 @@
 import { useState } from "react";
 import { FilterDropdown } from "../../components/filter-dropdown/FilterDropdown";
 import { SearchBar } from "../../components/search-bar/SearchBar";
-import { RESOURCE_TYPES, SKILL_LEVELS } from "../../constants/resources";
+import { FILTER_OPTIONS } from "../../constants/resources";
 
 export const ResourceListPage = () => {
-	const [resourceTypes, setResourceTypes] = useState<string[]>([]);
-	const [skillLevels, setSkillLevels] = useState<string[]>([]);
+	const [filters, setFilters] = useState<Record<string, string[]>>({});
+
+	const handleFilterChange = (filterId: string, selected: string[]) => {
+		setFilters((prev) => ({
+			...prev,
+			[filterId]: selected,
+		}));
+	};
 
 	return (
 		<div className="space-y-5">
@@ -19,18 +25,17 @@ export const ResourceListPage = () => {
 				<SearchBar />
 			</div>
 			<div className="flex justify-start gap-3">
-				<FilterDropdown
-					label="Resource Type"
-					options={RESOURCE_TYPES}
-					selectedOptions={resourceTypes}
-					onSelectionChange={setResourceTypes}
-				/>
-				<FilterDropdown
-					label="Skill Level"
-					options={SKILL_LEVELS}
-					selectedOptions={skillLevels}
-					onSelectionChange={setSkillLevels}
-				/>
+				{FILTER_OPTIONS.map((filter) => (
+					<FilterDropdown
+						key={filter.id}
+						label={filter.label}
+						availableOptions={filter.options}
+						selectedOptions={filters[filter.id] || []}
+						onSelectionChange={(selected) =>
+							handleFilterChange(filter.id, selected)
+						}
+					/>
+				))}
 			</div>
 		</div>
 	);

@@ -4,22 +4,23 @@ import { Button } from "../button/Button";
 import { Input } from "../input/Input";
 
 interface SearchBarProps {
-	value?: string;
+	searchQuery?: string;
 	placeholder?: string;
 	label?: string;
 	showClearButton?: boolean;
-	onChange?: (value: string) => void;
+	onChange?: (searchQuery: string) => void;
 }
 
 export const SearchBar = ({
-	value: controlledValue,
+	searchQuery: controlledValue,
 	placeholder = "Search by title, description, or tags...",
 	label = "Search",
 	showClearButton = true,
 	onChange,
 }: SearchBarProps) => {
 	const [internalValue, setInternalValue] = useState("");
-	const value = controlledValue !== undefined ? controlledValue : internalValue;
+	const searchQuery =
+		controlledValue !== undefined ? controlledValue : internalValue;
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const newValue = event.target.value;
@@ -54,11 +55,11 @@ export const SearchBar = ({
 					placeholder={placeholder}
 					className="pl-10 pr-10 bg-white w-96"
 					autoComplete="off"
-					value={value}
+					value={searchQuery}
 					onChange={handleChange}
 				/>
 
-				{showClearButton && value && (
+				{showClearButton && searchQuery && (
 					<Button
 						type="button"
 						variant="ghost"
