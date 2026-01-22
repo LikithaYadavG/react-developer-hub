@@ -1,11 +1,12 @@
+import { RESOURCES_TABLE } from "../../constants/resources";
 import { supabase } from "../../lib/supabase";
 import type { Resource, ResourceFilters } from "./resources.types";
 
-const RESOURCES_TABLE = "resources";
-
-function handleSupabaseError(supabaseError: unknown): never {
-	throw supabaseError;
-}
+const handleSupabaseError = (error: unknown, context?: string): never => {
+	throw new Error(context ? `Supabase error (${context})` : "Supabase error", {
+		cause: error,
+	});
+};
 
 export const resourcesApi = {
 	async fetchAllResources(): Promise<Resource[]> {
@@ -14,7 +15,7 @@ export const resourcesApi = {
 			.select("*")
 			.order("created_at", { ascending: false });
 
-		if (supabaseError) handleSupabaseError(supabaseError);
+		if (supabaseError) handleSupabaseError(supabaseError, "fetchAllResources");
 
 		return (allResources as Resource[]) ?? [];
 	},
@@ -26,7 +27,7 @@ export const resourcesApi = {
 			.eq("id", resourceId)
 			.maybeSingle();
 
-		if (supabaseError) handleSupabaseError(supabaseError);
+		if (supabaseError) handleSupabaseError(supabaseError, "fetchResourceById");
 
 		return singleResource as Resource | null;
 	},
@@ -46,31 +47,18 @@ export const resourcesApi = {
 		if (skillLevels && skillLevels.length > 0) {
 			resourcesQuery = resourcesQuery.in("level", skillLevels);
 		}
+		if (searchQuery) {
+			const searchPattern = `%${searchQuery}%`;
+			resourcesQuery = resourcesQuery.or(
+				`title.ilike.${searchPattern},description.ilike.${searchPattern}`,
+			);
+		}
 
 		const { data: fetchedResources, error: supabaseError } =
 			await resourcesQuery;
 
-		if (supabaseError) handleSupabaseError(supabaseError);
-
-		const resources = (fetchedResources as Resource[]) ?? [];
-
-		if (!searchQuery) {
-			return resources;
-		}
-
-		const normalizedSearchTerm = searchQuery.toLowerCase();
-
-		const searchFilteredResources = resources.filter((resource) => {
-			const titleContainsSearchTerm = resource.title
-				.toLowerCase()
-				.includes(normalizedSearchTerm);
-			const descriptionContainsSearchTerm = resource.description
-				.toLowerCase()
-				.includes(normalizedSearchTerm);
-
-			return titleContainsSearchTerm || descriptionContainsSearchTerm;
-		});
-
-		return searchFilteredResources;
+		if (supabaseError)
+			handleSupabaseError(supabaseError, "fetchResourcesByFilters");
+		return (fetchedResources as Resource[]) ?? [];
 	},
 };

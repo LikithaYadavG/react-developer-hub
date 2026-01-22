@@ -1,8 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
-
-const FIVE_MINUTES_IN_MS = 1000 * 60 * 5;
-const THIRTY_MINUTES_IN_MS = 1000 * 60 * 30;
+import { FIVE_MINUTES_IN_MS, THIRTY_MINUTES_IN_MS } from "../constants/query";
 
 const defaultQueryClientConfig = {
 	defaultOptions: {

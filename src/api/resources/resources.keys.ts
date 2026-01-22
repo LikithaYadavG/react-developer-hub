@@ -6,7 +6,7 @@ export const resourceQueryKeys = {
 	allResources: () => [...resourceQueryKeys.base, "all"] as const,
 
 	filteredResources: (filters: ResourceFilters) =>
-		[...resourceQueryKeys.base, "filtered", filters] as const,
+		[...resourceQueryKeys.base, "filtered", JSON.stringify(filters)] as const,
 
 	resourceById: (resourceId: string) =>
 		[...resourceQueryKeys.base, "detail", resourceId] as const,
