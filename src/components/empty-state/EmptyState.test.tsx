@@ -1,17 +1,13 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it } from "vitest";
-import { EmptyState } from "./EmptyState";
+import { EmptyState, type EmptyStateProps } from "./EmptyState";
 
-type RenderOptions = {
-	additionalProps?: Partial<React.ComponentProps<typeof EmptyState>>;
-};
-
-const defaultProps: React.ComponentProps<typeof EmptyState> = {
+const defaultProps: EmptyStateProps= {
 	title: "No results found",
 };
 
-const renderEmptyState = ({ additionalProps }: RenderOptions = {}) => {
+const renderEmptyState = (additionalProps?: Partial<EmptyStateProps>) => {
 	return render(<EmptyState {...defaultProps} {...additionalProps} />);
 };
 
@@ -26,9 +22,7 @@ describe("EmptyState", () => {
 
 	it("should render description when provided", () => {
 		renderEmptyState({
-			additionalProps: {
-				description: "Try adjusting your filters",
-			},
+			description: "Try adjusting your filters",
 		});
 
 		expect(screen.getByText(/try adjusting your filters/i)).toBeInTheDocument();
@@ -56,9 +50,7 @@ describe("EmptyState", () => {
 
 	it("should render custom icon when icon prop is provided", () => {
 		renderEmptyState({
-			additionalProps: {
-				icon: <span>Custom Icon</span>,
-			},
+			icon: <span>Custom Icon</span>,
 		});
 
 		expect(screen.getByText(/custom icon/i)).toBeInTheDocument();
@@ -66,9 +58,7 @@ describe("EmptyState", () => {
 
 	it("should render action when provided", () => {
 		renderEmptyState({
-			additionalProps: {
-				action: <button type="button">Create item</button>,
-			},
+			action: <button type="button">Create item</button>,
 		});
 
 		expect(
@@ -80,9 +70,7 @@ describe("EmptyState", () => {
 		const user = userEvent.setup();
 
 		renderEmptyState({
-			additionalProps: {
-				action: <button type="button">Retry</button>,
-			},
+			action: <button type="button">Retry</button>,
 		});
 
 		await user.click(screen.getByRole("button", { name: /retry/i }));
@@ -92,7 +80,7 @@ describe("EmptyState", () => {
 
 	it("should support search variant", () => {
 		renderEmptyState({
-			additionalProps: { variant: "search" },
+			variant: "search",
 		});
 
 		expect(
@@ -102,7 +90,7 @@ describe("EmptyState", () => {
 
 	it("should support noData variant", () => {
 		renderEmptyState({
-			additionalProps: { variant: "noData" },
+			variant: "noData",
 		});
 
 		expect(
@@ -111,9 +99,7 @@ describe("EmptyState", () => {
 	});
 
 	it("should support folder variant", () => {
-		renderEmptyState({
-			additionalProps: { variant: "folder" },
-		});
+		renderEmptyState({ variant: "folder" });
 
 		expect(
 			screen.getByRole("heading", { name: /no results found/i }),

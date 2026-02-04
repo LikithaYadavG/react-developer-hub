@@ -10,7 +10,7 @@ const variantIcons = {
 
 type EmptyStateVariant = keyof typeof variantIcons;
 
-interface EmptyStateProps {
+export interface EmptyStateProps {
 	title: string;
 	description?: string;
 	icon?: React.ReactNode;
