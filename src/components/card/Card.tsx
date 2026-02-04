@@ -187,14 +187,12 @@ export const CardDescription = ({
 	</p>
 );
 
-type CardImageProps = {
+type CardImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
 	src: string;
 	alt: string;
 	className?: string;
-} & Omit<
-	React.ImgHTMLAttributes<HTMLImageElement>,
-	"src" | "alt" | "className"
->;
+};
+
 
 export const CardImage = ({
 	src,

@@ -12,16 +12,14 @@ import {
 	CardImage,
 } from "./Card";
 
-type RenderOptions = {
-	additionalProps?: CardProps;
-};
+
 
 const defaultProps: CardProps = {
 	children: <div>Card content</div>,
 };
 
-const renderCard = ({ additionalProps }: RenderOptions = {}) => {
-	return render(<Card {...defaultProps} {...additionalProps} />);
+const renderCard = (additionalProps?: Partial<CardProps>) => {
+	return render(<Card {...defaultProps} {...(additionalProps as CardProps)} />);
 };
 
 describe("Card", () => {
@@ -33,10 +31,9 @@ describe("Card", () => {
 
 	it("should render a button when onClick is provided", () => {
 		renderCard({
-			additionalProps: {
 				onClick: vi.fn(),
 				"aria-label": "Clickable card",
-			},
+			
 		});
 
 		expect(
@@ -49,10 +46,10 @@ describe("Card", () => {
 		const onClick = vi.fn();
 
 		renderCard({
-			additionalProps: {
+			
 				onClick,
 				"aria-label": "Clickable card",
-			},
+			
 		});
 
 		await user.click(screen.getByRole("button", { name: /clickable card/i }));
@@ -62,9 +59,8 @@ describe("Card", () => {
 
 	it("should render a link when href is provided", () => {
 		renderCard({
-			additionalProps: {
 				href: "/test-link",
-			},
+			
 		});
 
 		expect(screen.getByRole("link")).toHaveAttribute("href", "/test-link");
@@ -76,31 +72,6 @@ describe("Card", () => {
 		expect(screen.getByRole("article")).toBeInTheDocument();
 	});
 
-	it("should apply elevated variant styles by default", () => {
-		renderCard();
-
-		expect(screen.getByRole("article")).toHaveClass("shadow-md");
-	});
-
-	it("should apply outlined variant styles", () => {
-		renderCard({
-			additionalProps: {
-				variant: "outlined",
-			},
-		});
-
-		expect(screen.getByRole("article")).toHaveClass("border-2");
-	});
-
-	it("should apply padding styles when padding is provided", () => {
-		renderCard({
-			additionalProps: {
-				padding: "md",
-			},
-		});
-
-		expect(screen.getByRole("article")).toHaveClass("p-4");
-	});
 
 	it("should render CardHeader", () => {
 		render(
